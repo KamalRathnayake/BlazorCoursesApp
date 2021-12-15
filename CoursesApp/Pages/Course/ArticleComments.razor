@@ -1,0 +1,32 @@
+﻿<div>
+    <h2>Comments</h2>
+    <textarea @bind="CommentText" @bind:event="oninput" class="form-control"></textarea>
+
+    <div style="display:block;padding-top:20px;padding-bottom:20px">
+        <button class="btn-primary btn-sm">Comment</button>
+        <button class="btn-default btn-sm">Clear</button>
+    </div>
+    <div>
+        <h5>You</h5>
+        <p>@CommentText</p>
+        <p>12 Dec 2021</p>
+    </div>
+
+    @for (int i = 0; i < 3; i++)
+    {
+        <div>
+            <h5>John Doe</h5>
+            <p>How long will it take for me to learn blazor?</p>
+            <p>12 Dec 2021</p>
+        </div>
+    }
+</div>
+
+@code {
+    private string CommentText { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+}

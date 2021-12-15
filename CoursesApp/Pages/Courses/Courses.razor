@@ -1,0 +1,41 @@
+﻿@page "/"
+
+<h3>Awesome Courses You Can Follow!</h3>
+
+@if (!string.IsNullOrEmpty(LikedCourseId))
+{
+    <p>Seems like you @(CoursesList.First(x=>x.ReferenceId == LikedCourseId).Name) We will make more courses like this!</p>
+}
+
+<div class="courses-container">
+@foreach(var course in CoursesList)
+{
+    <CourseItem Name="@course.Name" 
+                Description="@course.Description"
+                ReferenceId="@course.ReferenceId"
+                OnLikeClicked="OnCourseLikeClicked"></CourseItem>
+}
+</div>
+
+@code {
+    private List<Data.Course> CoursesList { get; set; } = new List<Data.Course>();
+    private string LikedCourseId{ get; set; }
+
+    protected override void OnInitialized()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            this.CoursesList.Add(new Data.Course
+                {
+                    ReferenceId = i.ToString(),
+                    Name = $"Course {i}",
+                    Description = $"A small description for course {i}"
+                });
+        }
+        base.OnInitialized();
+    }
+    public void OnCourseLikeClicked(string referenceId)
+    {
+        this.LikedCourseId = referenceId;
+    }
+}

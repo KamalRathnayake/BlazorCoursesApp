@@ -1,0 +1,12 @@
+﻿.course-list-item img {
+    width: 100%;
+}
+
+.course-list-item h5 {
+    padding-top: 5px;
+    margin-bottom: 0px;
+}
+
+.course-list-item p {
+    margin-bottom: 5px;
+}
