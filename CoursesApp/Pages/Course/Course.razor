@@ -1,35 +1,63 @@
 ﻿@page "/courses/{id}"
+@using CoursesApp.Services
 
-<div id="course-container">
-    <div id="course-menu">
-        <h2>Articles</h2>
-        <div>
-            @for (int i = 0; i < 100; i++)
-            {
-                <div class="menu-list-item">
-                    <h5><b>Getting Started @i</b></h5>
-                    <p>12.55 | Hosting with azure web apps</p>
-                </div>
-            }
-        </div>
-    </div>
+<CoursesApp.Pages.Common.Loader IsVisible="!Isloaded"></CoursesApp.Pages.Common.Loader>
 
-    <div id="course-view">
-        <img style="width:100%" src="https://static.gunnarpeipman.com/wp-content/uploads/2019/10/aspnet-core-featured.png" />
-
-        <div id="course-view-description">
+@if (Isloaded)
+{
+    <div id="course-container">
+        <div id="course-menu">
+            <h2>Articles</h2>
             <div>
-                <h2>Course</h2>
-                <p>ASP.NET is a popular web-development framework for building web apps on the .NET platform.<br /><br />ASP.NET Core is the open-source version of ASP.NET, that runs on macOS, Linux, and Windows. ASP.NET Core was first released in 2016 and is a re-design of earlier Windows-only versions of ASP.NET.</p>
-            </div> 
+                @foreach (var article in CurrentCourse.Articles)
+                {
+                    <div @onclick="ArticleClicked" class="menu-list-item">
+                        <h5><b>@article.Name</b></h5>
+                        <p>12.55 | Hosting with azure web apps</p>
+                    </div>
+                }
+            </div>
         </div>
 
-        <hr/>
-        <ArticleComments></ArticleComments>
+        <div id="course-view">
+            <img style="width:100%" src="https://static.gunnarpeipman.com/wp-content/uploads/2019/10/aspnet-core-featured.png" />
+
+
+            <div id="course-view-description">
+                <div>
+                    <h2>Course</h2>
+                    <p>ASP.NET is a popular web-development framework for building web apps on the .NET platform.<br /><br />ASP.NET Core is the open-source version of ASP.NET, that runs on macOS, Linux, and Windows. ASP.NET Core was first released in 2016 and is a re-design of earlier Windows-only versions of ASP.NET.</p>
+                </div>
+                <hr />
+                <ArticleComments></ArticleComments>
+            </div>
+        </div>
     </div>
-</div>
+}
 
 @code {
     [Parameter]
     public string Id{ get; set; }
+
+    [Parameter]
+    public int CurrentArticleId { get; set; }
+
+    [Inject]
+    private ICoursesProvider coursesProvider{ get; set; }
+
+
+    private bool Isloaded{ get; set; }
+    private Data.Course CurrentCourse{ get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        this.CurrentCourse = await this.coursesProvider.GetCourseByReferenceId(this.Id); 
+        await base.OnInitializedAsync();
+        this.Isloaded = true;
+    }
+
+    public void ArticleClicked()
+    {
+        this.CurrentArticleId = 5;
+    }
 }

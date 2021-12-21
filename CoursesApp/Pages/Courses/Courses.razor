@@ -1,5 +1,5 @@
 ﻿@page "/"
-
+@using CoursesApp.Services
 <h3>Awesome Courses You Can Follow!</h3>
 
 @if (!string.IsNullOrEmpty(LikedCourseId))
@@ -7,33 +7,34 @@
     <p>Seems like you @(CoursesList.First(x=>x.ReferenceId == LikedCourseId).Name) We will make more courses like this!</p>
 }
 
-<div class="courses-container">
-@foreach(var course in CoursesList)
+<CoursesApp.Pages.Common.Loader IsVisible="CoursesList == null"></CoursesApp.Pages.Common.Loader>
+
+@if (CoursesList != null)
 {
-    <CourseItem Name="@course.Name" 
+    <div class="courses-container">
+        @foreach (var course in CoursesList)
+        {
+            <CourseItem Name="@course.Name" 
                 Description="@course.Description"
                 ReferenceId="@course.ReferenceId"
                 OnLikeClicked="OnCourseLikeClicked"></CourseItem>
+        }
+    </div>
 }
-</div>
 
 @code {
-    private List<Data.Course> CoursesList { get; set; } = new List<Data.Course>();
+    private List<Data.Course> CoursesList { get; set; }
     private string LikedCourseId{ get; set; }
 
-    protected override void OnInitialized()
+    [Inject]
+    private ICoursesProvider coursesProvider { get; set; }
+
+    protected async override Task OnInitializedAsync()
     {
-        for (int i = 0; i < 10; i++)
-        {
-            this.CoursesList.Add(new Data.Course
-                {
-                    ReferenceId = i.ToString(),
-                    Name = $"Course {i}",
-                    Description = $"A small description for course {i}"
-                });
-        }
+        this.CoursesList = await coursesProvider.GetAll();
         base.OnInitialized();
     }
+
     public void OnCourseLikeClicked(string referenceId)
     {
         this.LikedCourseId = referenceId;
